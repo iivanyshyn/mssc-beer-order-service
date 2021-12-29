@@ -1,2 +1,0 @@
-
-# MSSC Beer Order Service
