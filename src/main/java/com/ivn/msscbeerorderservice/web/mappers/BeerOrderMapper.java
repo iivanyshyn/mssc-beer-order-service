@@ -1,7 +1,7 @@
 package com.ivn.msscbeerorderservice.web.mappers;
 
 import com.ivn.msscbeerorderservice.domain.BeerOrder;
-import com.ivn.msscbeerorderservice.web.model.BeerOrderDto;
+import com.ivn.brewery.model.BeerOrderDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,6 +1,6 @@
 package com.ivn.msscbeerorderservice.services.beer;
 
-import com.ivn.msscbeerorderservice.web.model.BeerDto;
+import com.ivn.brewery.model.BeerDto;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;

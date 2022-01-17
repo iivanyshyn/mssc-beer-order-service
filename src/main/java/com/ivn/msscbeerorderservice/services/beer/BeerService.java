@@ -1,6 +1,6 @@
 package com.ivn.msscbeerorderservice.services.beer;
 
-import com.ivn.msscbeerorderservice.web.model.BeerDto;
+import com.ivn.brewery.model.BeerDto;
 
 import java.util.Optional;
 import java.util.UUID;
