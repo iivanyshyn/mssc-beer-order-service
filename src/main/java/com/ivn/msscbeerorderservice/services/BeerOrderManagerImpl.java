@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -130,6 +132,37 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 .setHeader(ORDER_ID_HEADER, beerOrder.getId().toString())
                 .build();
         sm.sendEvent(Mono.just(msg)).blockLast();
+    }
+
+    // needs for await status change
+    private void awaitForStatus(UUID beerOrderId, BeerOrderStatusEnum statusEnum){
+        AtomicBoolean found = new AtomicBoolean(false);
+        AtomicInteger loopCount = new AtomicInteger(0);
+
+        while (!found.get()){
+            if (loopCount.incrementAndGet() > 10){
+                found.set(true);
+                log.debug("Loop Retries exceeded");
+            }
+
+            beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+                if(beerOrder.getOrderStatus().equals(statusEnum)) {
+                    found.set(true);
+                    log.debug("Order found");
+                } else {
+                    log.debug("Order Status Not Equal. Expected: " + statusEnum.name() + " Found: " + beerOrder.getOrderStatus().name());
+                }
+            }, () -> log.debug("Order id Not Found"));
+
+            if(!found.get()) {
+                try{
+                    log.debug("Sleeping for retry");
+                    Thread.sleep(100);
+                } catch (Exception e){
+                    //do nothing
+                }
+            }
+        }
     }
 
     private StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> build(BeerOrder beerOrder) {
